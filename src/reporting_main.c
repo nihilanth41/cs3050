@@ -12,15 +12,14 @@ int main( int argc, char **argv )
 	static int ret=0;
 
 	//check input args
-	if(argc != 1) 
+	if(argc != 2) 
 	{
 		return INCORRECT_COMMAND_LINE_ARGUMENTS;
-		
 	}
-
+	
 	//attempt to open file ro
-	FILE *file = fopen( "test.lst", "r" );
-	if(file == NULL) return FILE_FAILED_TO_OPEN; 
+	FILE *file = fopen( argv[1], "r" );
+	if(file == NULL) { return FILE_FAILED_TO_OPEN; }
 	//file can have any size from 0 to MAX_INT
 	int *a = malloc(sizeof(int));
 	long int count = 0;
