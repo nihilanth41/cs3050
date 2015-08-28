@@ -1,0 +1,7 @@
+# Overview
+ 1. The file set contains an example main that indicates how to properly use the reporting function;
+    feel free to make any and all changes to this file, or to ignore it completely and create your own main.
+   
+ 2. The two .h files provided contain the code for the reporting function and the enum for the errors that you MUST handle. Whenever an error is encountered, simply call the exit function with the argument that corresponds to the enum code for that error. 
+
+ 3.  In your program, you will need to include these two .h files exactly as written. You may NOT alter them in anyway. 
