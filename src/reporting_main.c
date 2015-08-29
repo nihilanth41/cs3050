@@ -23,7 +23,7 @@ int main( int argc, char **argv )
 	//attempt to open file ro
 	FILE *file = fopen( argv[1], "r" );
 	if(file == NULL) { return FILE_FAILED_TO_OPEN; }
-	//file can have any size from 0 to MAX_INT
+	
 	//get the number of strings
 	static int ret;
 	long int count=0;
@@ -108,11 +108,17 @@ int main( int argc, char **argv )
 }
 
 long int get_mode(int *a, int size) {
+	int mode=0;
+	int mode_count=0;
+	int current_count=0;
+	int current_number=0;
 
 	int i=0;
-	for(i=0; i<size-1; i++)
+	for(i=1; i<size; i++)
 	{
-		int j=i+1;
+		int j=i-1;
+
+
 	}
 }
 
@@ -121,23 +127,22 @@ long int get_mode(int *a, int size) {
 int is_integer(char *str) {
 	if(*str == '-') 
 	{
-		str++;
+		++str;
 	}
 	if(!*str)
 	{
 		//empty string or just -
-		return PARSING_ERROR_INVALID_CHARACTER_ENCOUNTERED;
-
+		exit(PARSING_ERROR_INVALID_CHARACTER_ENCOUNTERED);
 	}
 	while(*str)
 	{
 		if(!isdigit(*str))
 		{
-			return PARSING_ERROR_INVALID_CHARACTER_ENCOUNTERED;
+			exit(PARSING_ERROR_INVALID_CHARACTER_ENCOUNTERED);
 		}
 		else
 		{
-			str++;
+			++str;
 		}
 	}
 	return 1;
