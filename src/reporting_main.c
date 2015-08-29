@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "statistics_errors.h"
 #include "statistics_reporting.h"
 
 //max str length
 #define SIZE_MAX 100 
 
+int is_integer(char *str);
 long int mode(int *array, int size);
 void sort(int *array, int size);
 
@@ -39,6 +41,9 @@ int main( int argc, char **argv )
 	
 	//alloc memory for string pointers 
 	char **pp = (char **)malloc(count * sizeof(char *));
+	//alloc memory for int pointers
+	int *intPtr = (int *)malloc(count * sizeof(int));
+	int *ib = intPtr;
 	char **begin = pp;
 	//reopen file
 	file = fopen( argv[1], "r" );
@@ -57,13 +62,41 @@ int main( int argc, char **argv )
 		//increment string pointer
 		if(ret == EOF) break;
 	}
+	//close file
+	ret = fclose(file);
+	if(ret != 0) return FILE_FAILED_TO_CLOSE; 
+	
+	//point to beginning of str array
 	pp = begin;
 	for(i=0; i<count; i++)
 	{
-		printf("%s\n", *pp);
+		//print each string (make sure we captured everything)
+		//printf("%s\n", *pp);
+		//check if it's a valid integer
+		if(is_integer(*pp))
+		{
+			//copy to int array
+			*intPtr = atoi(*pp);
+			printf("int: %d\n", *intPtr);
+			intPtr++;
+		}
+		free(*pp);
 		pp++;
 	}
+	//free(pp);
+	free(begin);
+	//sort array
+	intPtr = ib;
+	sort(intPtr, (int)count);
+	for(i=0; i<count; i++)
+	{
+		printf("sorted int: %d\n", *intPtr);
+		intPtr++;
+	}
+	//long int mode = get_mode(intPtr, (int)count);
 
+
+	
 	
 		
 	// These are here to showcase use of the reporting function and can be removed
@@ -74,6 +107,30 @@ int main( int argc, char **argv )
 	return EXIT_SUCCESS;
 
 }
+
+int is_integer(char *str) {
+	if(*str == '-') 
+	{
+		str++;
+	}
+	if(!*str)
+	{
+		return 0;
+	}
+	while(*str)
+	{
+		if(!isdigit(*str))
+		{
+			return 0;
+		}
+		else
+		{
+			str++;
+		}
+	}
+	return 1;
+}
+
 
 
 void sort(int *p, int size)
