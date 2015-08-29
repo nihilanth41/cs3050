@@ -80,8 +80,9 @@ int main( int argc, char **argv )
 		free(*pp);
 		pp++;
 	}
-	//free(pp);
 	free(begin);
+	pp=NULL;
+	begin=NULL;
 	//sort array
 	intPtr = ib;
 	sort(intPtr, (int)count);
@@ -91,8 +92,9 @@ int main( int argc, char **argv )
 		intPtr++;
 	}
 	//long int mode = get_mode(intPtr, (int)count);
-
-
+	free(ib);
+	ib=NULL;
+	intPtr=NULL;
 	
 	
 		
