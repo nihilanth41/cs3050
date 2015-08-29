@@ -70,14 +70,11 @@ int main( int argc, char **argv )
 	pp = begin;
 	for(i=0; i<count; i++)
 	{
-		//print each string (make sure we captured everything)
-		//printf("%s\n", *pp);
 		//check if it's a valid integer
 		if(is_integer(*pp))
 		{
 			//copy to int array
 			*intPtr = atoi(*pp);
-			printf("int: %d\n", *intPtr);
 			intPtr++;
 		}
 		free(*pp);
@@ -108,6 +105,17 @@ int main( int argc, char **argv )
 
 }
 
+long int get_mode(int *a, int size) {
+
+	int i=0;
+	for(i=0; i<size-1; i++)
+	{
+		int j=i+1;
+	}
+}
+
+		
+
 int is_integer(char *str) {
 	if(*str == '-') 
 	{
@@ -115,13 +123,15 @@ int is_integer(char *str) {
 	}
 	if(!*str)
 	{
-		return 0;
+		//empty string or just -
+		return PARSING_ERROR_INVALID_CHARACTER_ENCOUNTERED;
+
 	}
 	while(*str)
 	{
 		if(!isdigit(*str))
 		{
-			return 0;
+			return PARSING_ERROR_INVALID_CHARACTER_ENCOUNTERED;
 		}
 		else
 		{
