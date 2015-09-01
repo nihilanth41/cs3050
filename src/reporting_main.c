@@ -30,6 +30,7 @@ int main( int argc, char **argv )
 	{
 		ret = fscanf(file, "%99s", buf);
 		if(ret == EOF) break;
+		printf("%s\n", buf);
 		count++;
 	}
 	if(count == 0) return PARSING_ERROR_EMPTY_FILE;
