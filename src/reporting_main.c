@@ -38,9 +38,10 @@ int main( int argc, char **argv )
 
 	//Use the number of strings to alloc memory for our double pointers
 	char **pp = (char **)malloc(count * sizeof(*pp));
+	char **begin = pp;
 	int *intPtr = (int *)malloc(count * sizeof(int));
 	int *ib = intPtr;
-	char **begin = pp;
+	
 
 	//reopen file
 	file = fopen( argv[1], "r" );
@@ -53,23 +54,24 @@ int main( int argc, char **argv )
 		char *line = NULL;
 		size_t len = 0;
 		ssize_t ret;
-		char *token = NULL;
 
 		//get a line from the file and store as string		
 		ret = getline(&line, &len, file);
+		//if read was successful
+		if(ret != -1)
+		{
 		
-		//use strtok() to split line into multiple strings
-		//split on space, tab, or newline
-		token = strtok(line, " \t\n");	
-		while(token) {
-			*pp = strdup(token);
-			printf("string token: %s\n", *pp);
-			pp++;	
-			token = strtok(NULL, " \t\n");
+			//use strtok() to split line into multiple strings
+			//split on space, tab, or newline
+			char *token = strtok(line, " \t\n");	
+			while(token) {
+				*pp = strdup(token);
+				//printf("string token: %s\n", *pp);
+				pp++;	
+				token = strtok(NULL, " \t\n");
+			}
 		}
-		//point string pointer at string 
-		//increment string pointer
-		if(ret == EOF) break;
+		free(line);
 	}
 	//close file
 	ret = fclose(file);
