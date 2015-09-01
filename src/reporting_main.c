@@ -112,37 +112,14 @@ int main( int argc, char **argv )
 }
 
 long int get_mode(int *a, int size) {
-	int j=0;
-	for(j=0; j<size; j++)
-	{
-		printf("a: %d\n", *(a+j));
-	}
-
-	int *numbers = malloc(sizeof(int)*size);	
-	int *nb = numbers;
-	int *freq = malloc(sizeof(int)*size);
-	memset(freq, 0, size);
-	int *fb = freq;
-	*numbers = *a;
-	*freq++;
+	//*a is an array pointer with the numbers
 	int i=0;
-	for(i=1; i<size; i++)
+	int j=0;
+	int *numbers = malloc(sizeof(*numbers)*size);	
+	int *freq = calloc(size, sizeof(*freq));
+	for(i=0; i<size; i++)
 	{
-		//if current number eq last number
-		if(*(a+i) == *(numbers+(i-1)))
-		{
-			//increment count
-			*(freq+i) += 1;
-		}
-		else
-		{
-			//increment number array
-			*(numbers+i) = *(a+i);
-			*numbers = *a;
-			*freq++;
-		}
-		a++;
-		printf("i[%d], numbers: %d, freq: %d\n", i, *(numbers+i), *(freq+i));
+		printf("a[%d] = %d\n", i, a[i]);
 	}
 	return 0;
 }
