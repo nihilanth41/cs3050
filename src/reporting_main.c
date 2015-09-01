@@ -20,12 +20,10 @@ int main( int argc, char **argv )
 		return INCORRECT_COMMAND_LINE_ARGUMENTS;
 	}
 	
-	//attempt to open file ro
+	//open the file, read the first 99 chars of each string into a buffer and record the number of strings found
 	FILE *file = fopen( argv[1], "r" );
 	if(file == NULL) { return FILE_FAILED_TO_OPEN; }
-	
-	//get the number of strings
-	static int ret;
+	int ret;
 	long int count=0;
 	char buf[SIZE_MAX];
 	for(;;)
@@ -35,16 +33,15 @@ int main( int argc, char **argv )
 		count++;
 	}
 	if(count == 0) return PARSING_ERROR_EMPTY_FILE;
-	//close file
 	ret = fclose(file);
 	if(ret != 0) return FILE_FAILED_TO_CLOSE; 
-	
-	//alloc memory for string pointers 
-	char **pp = (char **)malloc(count * sizeof(char *));
-	//alloc memory for int pointers
+
+	//Use the number of strings to alloc memory for our double pointers
+	char **pp = (char **)malloc(count * sizeof(*pp));
 	int *intPtr = (int *)malloc(count * sizeof(int));
 	int *ib = intPtr;
 	char **begin = pp;
+
 	//reopen file
 	file = fopen( argv[1], "r" );
 	if(file == NULL) { return FILE_FAILED_TO_OPEN; }
@@ -52,12 +49,24 @@ int main( int argc, char **argv )
 	int i=0;
 	for(i=0; i<count; ++i)
 	{
-		//get string from file
-		ret = fscanf(file, "%99s", buf);
-		//allocate memory for string
-		//alternatively use sizeof(buf)
-		*pp = strdup(buf);
-		pp++;	
+		//vars to pass to getline()
+		char *line = NULL;
+		size_t len = 0;
+		ssize_t ret;
+		char *token = NULL;
+
+		//get a line from the file and store as string		
+		ret = getline(&line, &len, file);
+		
+		//use strtok() to split line into multiple strings
+		//split on space, tab, or newline
+		token = strtok(line, " \t\n");	
+		while(token) {
+			*pp = strdup(token);
+			printf("string token: %s\n", *pp);
+			pp++;	
+			token = strtok(NULL, " \t\n");
+		}
 		//point string pointer at string 
 		//increment string pointer
 		if(ret == EOF) break;
