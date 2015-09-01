@@ -9,7 +9,7 @@
 #define SIZE_MAX 100 
 
 int is_integer(char *str);
-long int mode(int *array, int size);
+long int get_mode(int *a, int size);
 void sort(int *array, int size);
 
 int main( int argc, char **argv )
@@ -97,21 +97,14 @@ int main( int argc, char **argv )
 	//sort array
 	intPtr = ib;
 	sort(intPtr, (int)count);
-	for(i=0; i<count; i++)
-	{
-		printf("sorted int: %d\n", *intPtr);
-		intPtr++;
-	}
-	//long int mode = get_mode(intPtr, (int)count);
+	long int test = get_mode(intPtr, (int)count);
 	free(ib);
 	ib=NULL;
 	intPtr=NULL;
 	
-	
 		
 	// These are here to showcase use of the reporting function and can be removed
 	long int mode = 14;
-			
 	// Call this function with the proper arguments, in the correct order (count,mode)
 	REPORT(count, mode);
 	return EXIT_SUCCESS;
@@ -119,18 +112,39 @@ int main( int argc, char **argv )
 }
 
 long int get_mode(int *a, int size) {
-	int mode=0;
-	int mode_count=0;
-	int current_count=0;
-	int current_number=0;
+	int j=0;
+	for(j=0; j<size; j++)
+	{
+		printf("a: %d\n", *(a+j));
+	}
 
+	int *numbers = malloc(sizeof(int)*size);	
+	int *nb = numbers;
+	int *freq = malloc(sizeof(int)*size);
+	memset(freq, 0, size);
+	int *fb = freq;
+	*numbers = *a;
+	*freq++;
 	int i=0;
 	for(i=1; i<size; i++)
 	{
-		int j=i-1;
-
-
+		//if current number eq last number
+		if(*(a+i) == *(numbers+(i-1)))
+		{
+			//increment count
+			*(freq+i) += 1;
+		}
+		else
+		{
+			//increment number array
+			*(numbers+i) = *(a+i);
+			*numbers = *a;
+			*freq++;
+		}
+		a++;
+		printf("i[%d], numbers: %d, freq: %d\n", i, *(numbers+i), *(freq+i));
 	}
+	return 0;
 }
 
 		
