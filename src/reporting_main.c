@@ -5,8 +5,8 @@
 #include "statistics_errors.h"
 #include "statistics_reporting.h"
 
-long int get_count(char **argv);
-long int get_mode(int *a, int size);
+long int get_size(char **argv);
+void get_mode(int *a, long int size, long int *mode, long int *count);
 int is_integer(char *str);
 void sort(int *array, int size);
 
@@ -18,13 +18,13 @@ int main( int argc, char **argv )
 		return INCORRECT_COMMAND_LINE_ARGUMENTS;
 	}
 
-	long int count = get_count(argv);
+	long int size = get_size(argv);
 	int ret=0;
 
 	//Use the number of strings to alloc memory for our double pointers
-	char **pp = (char **)malloc(count * sizeof(*pp));
+	char **pp = (char **)malloc(size * sizeof(*pp));
 	char **begin = pp;
-	int *intPtr = (int *)malloc(count * sizeof(int));
+	int *intPtr = (int *)malloc(size * sizeof(int));
 	int *ib = intPtr;
 	
 
@@ -33,7 +33,7 @@ int main( int argc, char **argv )
 	if(file == NULL) { return FILE_FAILED_TO_OPEN; }
 	//only read as many strings as we allocated memory for
 	int i=0;
-	for(i=0; i<count; ++i)
+	for(i=0; i<size; ++i)
 	{
 		//vars to pass to getline()
 		char *line = NULL;
@@ -64,7 +64,7 @@ int main( int argc, char **argv )
 	
 	//point to beginning of str array
 	pp = begin;
-	for(i=0; i<count; i++)
+	for(i=0; i<size; i++)
 	{
 		//check if it's a valid integer
 		if(is_integer(*pp))
@@ -86,22 +86,22 @@ int main( int argc, char **argv )
 	begin=NULL;
 	//sort array
 	intPtr = ib;
-	sort(intPtr, (int)count);
-	long int test = get_mode(intPtr, (int)count);
+	sort(intPtr, size);
+	long int count=0;
+	long int mode=0;
+	get_mode(intPtr, size, &mode, &count);
 	free(ib);
 	ib=NULL;
 	intPtr=NULL;
 	
 		
-	// These are here to showcase use of the reporting function and can be removed
-	long int mode = 14;
 	// Call this function with the proper arguments, in the correct order (count,mode)
 	REPORT(count, mode);
 	return EXIT_SUCCESS;
 
 }
 
-long int get_count(char **argv) {
+long int get_size(char **argv) {
 	
 	//open the file, read the first 99 chars of each string into a buffer and record the number of strings found
 	FILE *file = fopen( argv[1], "r" );
@@ -125,18 +125,57 @@ long int get_count(char **argv) {
 	return count;
 }
 
-long int get_mode(int *a, int size) {
-	//*a is an array pointer with the numbers
-	int i=0;
-	int j=0;
-	int *numbers = malloc(sizeof(*numbers)*size);	
-	int *freq = calloc(size, sizeof(*freq));
-	for(i=0; i<size; i++)
+void get_mode(int *a, long int size, long int *mode, long int *count) {
+	//assign values for current mode
+	int currentMode=0;
+	int currentFreq=0;
+	
+	//values for temp
+	int tempMode=*a;
+	int tempFreq=1;
+	//set first value manually
+	int i=1;
+	for(i=1; i<size; i++)
 	{
-		printf("a[%d] = %d\n", i, a[i]);
+		//if we are at a transition
+		//then check the mode of our tracking number against our current mode
+		if(*(a+i) != tempMode || i == size) 
+		{
+			//cmp modes
+			if(tempFreq > currentFreq)
+			{
+				//assign new mode if temp is larger 
+				currentMode = tempMode;
+				currentFreq = tempFreq;
+			}
+			//assign new tempMode b/c transition
+			tempMode = *(a+i);
+			tempFreq = 1;
+			//return to beginning of for loop
+			continue;
+		}
+		//otherwise tempMode = current number, increment tempFreq
+		tempFreq++;
+	
+		//if at the last element 
+		if(i == size)
+		{
+			//cmp modes
+			if(tempFreq > currentFreq)
+			{
+				currentMode = tempMode;
+				currentFreq = tempFreq;
+			}
+		}
 	}
-	return 0;
+	//end of array
+	*mode = currentMode;
+	*count = tempFreq;
 }
+
+
+
+
 
 		
 
