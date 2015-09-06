@@ -5,11 +5,9 @@
 #include "statistics_errors.h"
 #include "statistics_reporting.h"
 
-//max str length
-#define SIZE_MAX 100 
-
-int is_integer(char *str);
+long int get_count(char **argv);
 long int get_mode(int *a, int size);
+int is_integer(char *str);
 void sort(int *array, int size);
 
 int main( int argc, char **argv )
@@ -19,23 +17,9 @@ int main( int argc, char **argv )
 	{
 		return INCORRECT_COMMAND_LINE_ARGUMENTS;
 	}
-	
-	//open the file, read the first 99 chars of each string into a buffer and record the number of strings found
-	FILE *file = fopen( argv[1], "r" );
-	if(file == NULL) { return FILE_FAILED_TO_OPEN; }
-	int ret;
-	long int count=0;
-	char buf[SIZE_MAX];
-	for(;;)
-	{
-		ret = fscanf(file, "%99s", buf);
-		if(ret == EOF) break;
-		printf("%s\n", buf);
-		count++;
-	}
-	if(count == 0) return PARSING_ERROR_EMPTY_FILE;
-	ret = fclose(file);
-	if(ret != 0) return FILE_FAILED_TO_CLOSE; 
+
+	long int count = get_count(argv);
+	int ret=0;
 
 	//Use the number of strings to alloc memory for our double pointers
 	char **pp = (char **)malloc(count * sizeof(*pp));
@@ -45,7 +29,7 @@ int main( int argc, char **argv )
 	
 
 	//reopen file
-	file = fopen( argv[1], "r" );
+	FILE *file = fopen( argv[1], "r" );
 	if(file == NULL) { return FILE_FAILED_TO_OPEN; }
 	//only read as many strings as we allocated memory for
 	int i=0;
@@ -89,9 +73,14 @@ int main( int argc, char **argv )
 			*intPtr = atoi(*pp);
 			intPtr++;
 		}
+		else
+		{
+			exit(PARSING_ERROR_INVALID_CHARACTER_ENCOUNTERED);
+		}
 		free(*pp);
 		pp++;
 	}
+
 	free(begin);
 	pp=NULL;
 	begin=NULL;
@@ -112,6 +101,30 @@ int main( int argc, char **argv )
 
 }
 
+long int get_count(char **argv) {
+	
+	//open the file, read the first 99 chars of each string into a buffer and record the number of strings found
+	FILE *file = fopen( argv[1], "r" );
+	if(file == NULL) { exit(FILE_FAILED_TO_OPEN); }
+	int ret;
+	long int count=0;
+	char buf[100];
+	for(;;)
+	{
+		ret = fscanf(file, "%99s", buf);
+		if(ret == EOF) break;
+		count++;
+	}
+	if(count == 0) 
+		exit(PARSING_ERROR_EMPTY_FILE);
+
+	ret = fclose(file);
+	if(ret != 0) 
+		exit(FILE_FAILED_TO_CLOSE);
+	
+	return count;
+}
+
 long int get_mode(int *a, int size) {
 	//*a is an array pointer with the numbers
 	int i=0;
@@ -128,20 +141,20 @@ long int get_mode(int *a, int size) {
 		
 
 int is_integer(char *str) {
+		//empty string or just -
 	if(*str == '-') 
 	{
 		++str;
 	}
 	if(!*str)
 	{
-		//empty string or just -
-		exit(PARSING_ERROR_INVALID_CHARACTER_ENCOUNTERED);
+		return 0;
 	}
 	while(*str)
 	{
 		if(!isdigit(*str))
 		{
-			exit(PARSING_ERROR_INVALID_CHARACTER_ENCOUNTERED);
+			return 0;
 		}
 		else
 		{
@@ -154,7 +167,7 @@ int is_integer(char *str) {
 
 
 void sort(int *p, int size)
-{ //merge sort 
+{ 
 	int hold = 0;
 	int pass = 0;
 	for(pass=1; pass<size; pass++)
