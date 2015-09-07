@@ -51,7 +51,6 @@ int main( int argc, char **argv )
 			char *token = strtok(line, " \t\n");	
 			while(token) {
 				*pp = strdup(token);
-				//printf("string token: %s\n", *pp);
 				pp++;	
 				token = strtok(NULL, " \t\n");
 			}
@@ -170,7 +169,7 @@ void get_mode(int *a, long int size, long int *mode, long int *count) {
 	}
 	//end of array
 	*mode = currentMode;
-	*count = tempFreq;
+	*count = currentFreq;
 }
 
 
