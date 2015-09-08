@@ -152,15 +152,24 @@ void get_mode(int *a, long int size, long int *m, long int *c) {
 			(modes+j)->freq = 1;
 		}
 	}
-	printf("number of unique numbers: %d\n", j);
+	int newmode=0;
+	int newcount=0;
+	//printf("number of unique numbers: %d\n", j);
 	for(i=0; i<j; i++)
 	{
-		printf("number: %d\t freq: %d\n", (modes+i)->number, (modes+i)->freq);
+		//for each element in struct array, if the freq is higher than newcount, it's the new mode
+		if((modes+i)->freq > newcount)
+		{
+			//assign new mode
+			newmode = (modes+i)->number;
+			newcount = (modes+i)->freq;
+		}
+		//printf("number: %d\t freq: %d\n", (modes+i)->number, (modes+i)->freq);
 	}
-	
+	free(modes);
 	//end of array
-	*m = (long int)1;
-	*c = (long int)1;
+	*m = (long int)newmode;
+	*c = (long int)newcount;
 }
 
 
