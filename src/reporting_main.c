@@ -124,52 +124,43 @@ long int get_size(char **argv) {
 	return count;
 }
 
-void get_mode(int *a, long int size, long int *mode, long int *count) {
+void get_mode(int *a, long int size, long int *m, long int *c) {
 	//assign values for current mode
-	int currentMode=0;
-	int currentFreq=0;
-	
-	//values for temp
-	int tempMode=*a;
-	int tempFreq=1;
-	//set first value manually
+	struct mode_t {
+		int number;
+		int freq;
+	};
+	typedef struct mode_t mode;
+	mode *modes = malloc(sizeof(*modes)*size);
+	modes->number = *a;
+	modes->freq = 1;
+	int j=0;
 	int i=1;
 	for(i=1; i<size; i++)
 	{
-		//if we are at a transition
-		//then check the mode of our tracking number against our current mode
-		if(*(a+i) != tempMode || i == size) 
+		//array is sorted
+		//if current number == last number
+		if(*(a+i) == (modes+j)->number) 
 		{
-			//cmp modes
-			if(tempFreq > currentFreq)
-			{
-				//assign new mode if temp is larger 
-				currentMode = tempMode;
-				currentFreq = tempFreq;
-			}
-			//assign new tempMode b/c transition
-			tempMode = *(a+i);
-			tempFreq = 1;
-			//return to beginning of for loop
-			continue;
+			(modes+j)->freq++;
 		}
-		//otherwise tempMode = current number, increment tempFreq
-		tempFreq++;
-	
-		//if at the last element 
-		if(i == size)
+		else
 		{
-			//cmp modes
-			if(tempFreq > currentFreq)
-			{
-				currentMode = tempMode;
-				currentFreq = tempFreq;
-			}
+			//new number
+			j++;
+			(modes+j)->number = *(a+i);
+			(modes+j)->freq = 1;
 		}
 	}
+	printf("number of unique numbers: %d\n", j);
+	for(i=0; i<j; i++)
+	{
+		printf("number: %d\t freq: %d\n", (modes+i)->number, (modes+i)->freq);
+	}
+	
 	//end of array
-	*mode = currentMode;
-	*count = currentFreq;
+	*m = (long int)1;
+	*c = (long int)1;
 }
 
 
