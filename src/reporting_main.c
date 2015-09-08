@@ -7,7 +7,7 @@
 
 long int get_size(char **argv);
 void get_mode(int *a, long int size, long int *mode, long int *count);
-int is_integer(char *str);
+int is_int(char *str);
 void sort(int *array, int size);
 
 int main( int argc, char **argv )
@@ -26,7 +26,6 @@ int main( int argc, char **argv )
 	char **begin = pp;
 	int *intPtr = (int *)malloc(size * sizeof(int));
 	int *ib = intPtr;
-	
 
 	//reopen file
 	FILE *file = fopen( argv[1], "r" );
@@ -66,7 +65,7 @@ int main( int argc, char **argv )
 	for(i=0; i<size; i++)
 	{
 		//check if it's a valid integer
-		if(is_integer(*pp))
+		if(is_int(*pp))
 		{
 			//copy to int array
 			*intPtr = atoi(*pp);
@@ -79,25 +78,27 @@ int main( int argc, char **argv )
 		free(*pp);
 		pp++;
 	}
-
 	free(begin);
 	pp=NULL;
 	begin=NULL;
+
 	//sort array
 	intPtr = ib;
 	sort(intPtr, size);
+
+	//get mode
 	long int count=0;
 	long int mode=0;
 	get_mode(intPtr, size, &mode, &count);
+	
+	//free memory 
 	free(ib);
 	ib=NULL;
 	intPtr=NULL;
-	
 		
 	// Call this function with the proper arguments, in the correct order (count,mode)
 	REPORT(count, mode);
 	return EXIT_SUCCESS;
-
 }
 
 long int get_size(char **argv) {
@@ -173,13 +174,8 @@ void get_mode(int *a, long int size, long int *m, long int *c) {
 }
 
 
-
-
-
-		
-
-int is_integer(char *str) {
-		//empty string or just -
+int is_int(char *str) {
+	//empty string or just -
 	if(*str == '-') 
 	{
 		++str;
@@ -203,9 +199,7 @@ int is_integer(char *str) {
 }
 
 
-
-void sort(int *p, int size)
-{ 
+void sort(int *p, int size) { 
 	int hold = 0;
 	int pass = 0;
 	for(pass=1; pass<size; pass++)
