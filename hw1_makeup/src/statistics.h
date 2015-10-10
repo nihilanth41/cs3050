@@ -7,6 +7,4 @@
 #define BUFFER 100
 
 int parser(FILE* inputFile, int** numberSequence);
-void mergeSort(int* numberSequence, int low, int high, int size);
-void partition(int* numberSequence, int low, int mid, int high, int size);
-int mode(int* numberSequence, int size);
+int median(int* numberSequence, int size);

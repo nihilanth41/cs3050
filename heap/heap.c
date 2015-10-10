@@ -3,6 +3,40 @@
 
 void build_max_heap(int *a, int n);
 void max_heapify(int *a, int i, int n);
+int parent(int *a, int i);
+int left(int *a, int i);
+int right(int *a, int i);
+
+#define HEAP_SIZE 6
+
+// Input: a[]: An array representing a heap, i: an array index
+// Output: Index in a[] of the parent of i 
+int parent(int *a, int i) {
+	if(i == 0) { return NULL; }
+	return (i/2); 
+}
+
+// Input: a[]: An array representing a heap, i: an array index
+// Output: Index in a[] of the right child of i
+int right(int *a, int i) {
+	if((2*i)+1 <= HEAP_SIZE)
+	{
+		return (2*i)+1;
+	}
+	else
+		return NULL;
+}
+
+// Input: a[]: An array representing a heap, i: an array index
+// Output: Index in a[] of the left child of i
+int left(int *a, int i) {
+	if((2*i) <= HEAP_SIZE)
+	{
+		return (2*i);
+	}
+	else
+		return NULL;
+}
 
 void build_max_heap(int *a, int n) {
 	int i;
@@ -16,8 +50,8 @@ void build_max_heap(int *a, int n) {
 //makes a heap out of the subtree
 void max_heapify(int *a, int i, int n) {
 	int largest=0;
-	int left = *(a+(2*i));
-	int right = *(a+(2*i)+1);
+		
+
 	if((left <= n) && (*(a+left) > *(a+i)))
 	{
 		largest = left;
