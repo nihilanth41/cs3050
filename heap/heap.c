@@ -1,18 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void build_max_heap(int *a, int n);
-void max_heapify(int *a, int i, int n);
+void build_max_heap(int *a);
+void max_heapify(int *a, int i);
 int parent(int *a, int i);
 int left(int *a, int i);
 int right(int *a, int i);
 
-#define HEAP_SIZE 6
+#define HEAP_SIZE 7
 
 // Input: a[]: An array representing a heap, i: an array index
 // Output: Index in a[] of the parent of i 
 int parent(int *a, int i) {
-	if(i == 0) { return NULL; }
+	if(i == 0) { return -1; }
 	return (i/2); 
 }
 
@@ -24,7 +24,7 @@ int right(int *a, int i) {
 		return (2*i)+1;
 	}
 	else
-		return NULL;
+		return -1;
 }
 
 // Input: a[]: An array representing a heap, i: an array index
@@ -35,51 +35,60 @@ int left(int *a, int i) {
 		return (2*i);
 	}
 	else
-		return NULL;
+		return -1;
 }
 
-void build_max_heap(int *a, int n) {
+// Input: a[]: An unsorted array 
+// Output: a[] modified such that it represents a heap 
+void build_max_heap(int *a) {
 	int i;
-	for(i=(n/2); i>0; i--)
+	for(i=(HEAP_SIZE/2); i>0; i--)
 	{
-		max_heapify(a, i, n);
+		max_heapify(a, i);
 	}
 }
 
-//untested, built from psuedocode 
-//makes a heap out of the subtree
-void max_heapify(int *a, int i, int n) {
+// Input: a[]: an array where the left and right children of i are heaps (but i is not necessarily), i: an array index
+// Output: a[] modified such that index i is the root of a heap
+void max_heapify(int *a, int i) {
 	int largest=0;
-		
-
-	if((left <= n) && (*(a+left) > *(a+i)))
-	{
-		largest = left;
-	}
-	else
+	int l = left(a, i);
+	int r = right(a, i);
+	if(l == -1)
 	{
 		largest = i;
 	}
-	if((right <= n) && (*(a+right) > *(a+largest)))
+	else
 	{
-		largest = right;
+		if( (l <= HEAP_SIZE) && (*(a+l) > *(a+i)) ) 
+			{ largest = l; }
+		else 
+			{ largest = i; }
 	}
-	if(largest != i)
+	
+	if(r != -1)
 	{
-		int temp = *(a+i); 
+		if( (r <= HEAP_SIZE) && (*(a+r) < *(a+largest)) )
+			{ largest = r; }
+	}
+
+	if( largest != i )
+	{
+		//exchange A[i] & A[largest]
+		int tmp = *(a+i); 
 		*(a+i) = *(a+largest);
-		*(a+largest) = temp;
-		max_heapify(a, largest, n);
+		*(a+largest) = tmp; 
+
+		//max_heapify again to verify heap property
+		max_heapify(a, largest);
 	}
 }
-
+	
 int main(int argc, char **argv) {
 	int a[] = { 1, 2, 3, 4, 5, 6, 7 };
-	int n = 7;
-	build_max_heap(a, n);
-	build_max_heap(a, n);
+	build_max_heap(a);
 	int i;
-	for(i=0; i<n; i++)
+	for(i=0; i<HEAP_SIZE; i++)
 	{
 		printf("a[%d] = %d\n", i, a[i]);
 	}
