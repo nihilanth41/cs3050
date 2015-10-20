@@ -12,7 +12,7 @@ int right(int *a, int i);
 // Input: a[]: An array representing a heap, i: an array index
 // Output: Index in a[] of the parent of i 
 int parent(int *a, int i) {
-	if(i == 0) { return -1; }
+	if(i == 0) { return NULL; }
 	return (i/2); 
 }
 
@@ -24,7 +24,7 @@ int right(int *a, int i) {
 		return (2*i)+1;
 	}
 	else
-		return -1;
+		return NULL;
 }
 
 // Input: a[]: An array representing a heap, i: an array index
@@ -35,7 +35,7 @@ int left(int *a, int i) {
 		return (2*i);
 	}
 	else
-		return -1;
+		return NULL;
 }
 
 // Input: a[]: An unsorted array 
@@ -54,7 +54,7 @@ void max_heapify(int *a, int i) {
 	int largest=0;
 	int l = left(a, i);
 	int r = right(a, i);
-	if(l == -1)
+	if(l == NULL)
 	{
 		largest = i;
 	}
@@ -66,7 +66,7 @@ void max_heapify(int *a, int i) {
 			{ largest = i; }
 	}
 	
-	if(r != -1)
+	if(r != NULL)
 	{
 		if( (r <= HEAP_SIZE) && (*(a+r) < *(a+largest)) )
 			{ largest = r; }
